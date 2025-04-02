@@ -1,0 +1,316 @@
+definitions:
+  entities.Movie:
+    properties:
+      created_at:
+        description: ReleaseDate *time.Time     `json:"release_date" gorm:"default:null"`
+        type: string
+      director:
+        type: string
+      id:
+        type: integer
+      plot:
+        type: string
+      title:
+        type: string
+      updated_at:
+        type: string
+      year:
+        type: integer
+    type: object
+  rest.R:
+    properties:
+      data: {}
+      error_code:
+        type: integer
+      error_note:
+        type: string
+      status:
+        type: string
+    type: object
+  rest.RespLogin:
+    properties:
+      token:
+        type: string
+    type: object
+  rest.loginReq:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
+  rest.registerReq:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+      username:
+        type: string
+    type: object
+info:
+  contact:
+    email: shokirovrakhimjon@gmail.com
+    name: API Support
+    url: https://www.linkedin.com/in/rakhimjonshokirov/
+  description: Contains movie crud logics
+  title: movie-crud-app service API
+  version: "1.0"
+paths:
+  /auth/login:
+    post:
+      consumes:
+      - application/json
+      description: Logs in a user and returns a JWT token
+      parameters:
+      - description: req body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/rest.loginReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/rest.R'
+            - properties:
+                data:
+                  $ref: '#/definitions/rest.RespLogin'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/rest.R'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/rest.R'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/rest.R'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/rest.R'
+      summary: Login
+      tags:
+      - auth
+  /auth/register:
+    post:
+      consumes:
+      - application/json
+      description: Creates a new user with email, username and password
+      parameters:
+      - description: req body
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/rest.registerReq'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/rest.R'
+            - properties:
+                data:
+                  type: string
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/rest.R'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/rest.R'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/rest.R'
+      summary: Register a new user
+      tags:
+      - auth
+  /movies:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/rest.R'
+            - properties:
+                data:
+                  $ref: '#/definitions/entities.Movie'
+              type: object
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/rest.R'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/rest.R'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/rest.R'
+      summary: Get all movies
+      tags:
+      - movies
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Movie data
+        in: body
+        name: movie
+        required: true
+        schema:
+          $ref: '#/definitions/entities.Movie'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/rest.R'
+            - properties:
+                data:
+                  $ref: '#/definitions/entities.Movie'
+              type: object
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/rest.R'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/rest.R'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/rest.R'
+      summary: Create a movie
+      tags:
+      - movies
+  /movies/{id}:
+    delete:
+      parameters:
+      - description: Movie ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/rest.R'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/rest.R'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/rest.R'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/rest.R'
+      summary: Delete movie
+      tags:
+      - movies
+    get:
+      parameters:
+      - description: Movie ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/rest.R'
+            - properties:
+                data:
+                  $ref: '#/definitions/entities.Movie'
+              type: object
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/rest.R'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/rest.R'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/rest.R'
+      summary: Get movie by ID
+      tags:
+      - movies
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Movie ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Movie data
+        in: body
+        name: movie
+        required: true
+        schema:
+          $ref: '#/definitions/entities.Movie'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/rest.R'
+            - properties:
+                data:
+                  $ref: '#/definitions/entities.Movie'
+              type: object
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/rest.R'
+        "422":
+          description: Unprocessable Entity
+          schema:
+            $ref: '#/definitions/rest.R'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/rest.R'
+      summary: Update movie
+      tags:
+      - movies
+schemes:
+- http
+swagger: "2.0"

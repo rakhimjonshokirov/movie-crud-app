@@ -1,0 +1,54 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: movie-crud-app
+    environment:
+      - ENVIRONMENT=test
+      - HTTP_PORT=7900
+      - SERVER_IP=localhost
+      - POSTGRES_HOST=postgres
+      - POSTGRES_PORT=5432
+      - POSTGRES_DATABASE=movie-crud-app
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres1234
+    ports:
+      - "7900:7900"
+    depends_on:
+      - postgres
+    networks:
+      - app-network
+
+  postgres:
+    image: postgres:latest
+    container_name: movie-crud-db
+    restart: always
+    environment:
+      POSTGRES_DB: movie-crud-app
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres1234
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - app-network
+  
+  migrate:
+    image: migrate/migrate
+    depends_on:
+      - postgres
+    networks:
+      - app-network
+    volumes:
+      - ./migrations:/migrations
+    entrypoint: [ "migrate", "-path", "/migrations", "-database", "postgres://postgres:postgres1234@postgres:5432/movie-crud-app?sslmode=disable" ]
+    command: ["up"]
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
