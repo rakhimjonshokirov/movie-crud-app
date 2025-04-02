@@ -11,6 +11,8 @@ A Go-based RESTful microservice for managing movies, featuring:
 
 ## 📦 Getting Started
 
+Note: GET methods and Auth tags are publicly available. All other endpoints require authorization.
+
 ### 🐳 Run with Docker
 
 ```bash
