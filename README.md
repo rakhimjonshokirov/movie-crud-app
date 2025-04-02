@@ -149,3 +149,7 @@ Access interactive docs here:
 ## 📅 Generated on
 
 _2025-04-02 21:08:38_
+
+Here’s what the Movie CRUD app looks like in action:
+
+![Movie CRUD Screenshot](./assets/swagger.png)
