@@ -27,6 +27,6 @@ func (h *Handler) routes() {
 
 	// Public routes
 	h.router.GET("/movies", h.getAllMovies)
-	h.router.GET("/:id", h.getMovieByID)
+	h.router.GET("/movies/:id", h.getMovieByID)
 
 }
